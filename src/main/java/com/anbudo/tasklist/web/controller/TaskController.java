@@ -5,7 +5,6 @@ import com.anbudo.tasklist.domain.task.TaskImage;
 import com.anbudo.tasklist.service.TaskService;
 import com.anbudo.tasklist.web.dto.task.TaskDto;
 import com.anbudo.tasklist.web.dto.task.TaskImageDto;
-import com.anbudo.tasklist.web.dto.validation.OnCreate;
 import com.anbudo.tasklist.web.dto.validation.OnUpdate;
 import com.anbudo.tasklist.web.mappers.TaskImageMapper;
 import com.anbudo.tasklist.web.mappers.TaskMapper;
@@ -20,11 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/tasks")

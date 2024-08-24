@@ -21,12 +21,14 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "userService::getById", key = "#id")
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
+
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "userService::getByUsername", key = "#username")

@@ -16,7 +16,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,7 +33,7 @@ public class User implements Serializable {
     private String password;
     @Transient
     private String passwordConfirm;
-    @Column(name="role")
+    @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "users_roles")
     @Enumerated(value = EnumType.STRING)

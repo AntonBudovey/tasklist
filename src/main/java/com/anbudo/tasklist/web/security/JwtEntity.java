@@ -15,6 +15,7 @@ public class JwtEntity implements UserDetails {
     private final String name;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

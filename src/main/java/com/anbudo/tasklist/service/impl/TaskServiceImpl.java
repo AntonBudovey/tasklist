@@ -9,12 +9,12 @@ import com.anbudo.tasklist.repository.TaskRepository;
 import com.anbudo.tasklist.service.ImageService;
 import com.anbudo.tasklist.service.TaskService;
 import com.anbudo.tasklist.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

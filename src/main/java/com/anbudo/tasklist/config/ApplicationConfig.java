@@ -10,8 +10,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -74,21 +72,25 @@ public class ApplicationConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(handling -> {handling.authenticationEntryPoint((request, response, authException) -> {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.getWriter().write("Unauthorized");
-                });
-                handling.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    response.getWriter().write("Unauthorized");
-                });})
+                .exceptionHandling(handling -> {
+                    handling.authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        response.getWriter().write("Unauthorized");
+                    });
+                    handling.accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.getWriter().write("Unauthorized");
+                    });
+                })
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**",
                                 "/swagger-ui/**",
                                 "v3/api-docs/**").permitAll()
-                                .anyRequest().authenticated())
+                        .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    };
-
     }
+
+    ;
+
+}

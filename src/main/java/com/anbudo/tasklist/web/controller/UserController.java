@@ -62,6 +62,7 @@ public class UserController {
         User updatedUser = userservice.update(user);
         return userMapper.toDto(updatedUser);
     }
+
     @PostMapping("/{id}/tasks")
     @PreAuthorize("@customSecurityExpression.canAccessUser(#id)")
     public TaskDto create(@Validated(OnCreate.class) @RequestBody TaskDto taskDto, @PathVariable Long id) {

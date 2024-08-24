@@ -19,10 +19,10 @@ public class TaskDto {
     private Long id;
 
     @NotNull(message = "Title cannot be null", groups = {OnUpdate.class, OnCreate.class})
-    @Length(max=255, message = "Title cannot be longer than 255 characters", groups = {OnUpdate.class, OnCreate.class})
+    @Length(max = 255, message = "Title cannot be longer than 255 characters", groups = {OnUpdate.class, OnCreate.class})
     private String title;
 
-    @Length(max=255, message = "Description cannot be longer than 255 characters", groups = {OnUpdate.class, OnCreate.class})
+    @Length(max = 255, message = "Description cannot be longer than 255 characters", groups = {OnUpdate.class, OnCreate.class})
     private String description;
 
     private Status status;
