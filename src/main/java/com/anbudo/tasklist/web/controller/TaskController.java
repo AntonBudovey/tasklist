@@ -11,6 +11,9 @@ import com.anbudo.tasklist.web.mappers.TaskImageMapper;
 import com.anbudo.tasklist.web.mappers.TaskMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,21 +39,24 @@ public class TaskController {
     private final TaskImageMapper taskImageMapper;
 
     @GetMapping("/{id}")
+    @QueryMapping(name ="taskById")
     @PreAuthorize("@customSecurityExpression.canAccessTask(#id)")
-    public TaskDto getById(@PathVariable Long id) {
+    public TaskDto getById(@PathVariable @Argument Long id) {
         Task task = taskService.getById(id);
         return taskMapper.toDto(task);
     }
 
     @DeleteMapping("/{id}")
+    @MutationMapping(name = "deleteTask")
     @PreAuthorize("@customSecurityExpression.canAccessTask(#id)")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable @Argument Long id) {
         taskService.delete(id);
     }
 
     @PutMapping("/update")
+    @MutationMapping(name = "updateTask")
     @PreAuthorize("@customSecurityExpression.canAccessTask(#taskDto.id)")
-    public TaskDto update(@Validated(OnUpdate.class) @RequestBody TaskDto taskDto) {
+    public TaskDto update(@Validated(OnUpdate.class) @RequestBody @Argument(name = "dto") TaskDto taskDto) {
         Task task = taskMapper.toEntity(taskDto);
         Task updatedTask = taskService.update(task);
         return taskMapper.toDto(updatedTask);
