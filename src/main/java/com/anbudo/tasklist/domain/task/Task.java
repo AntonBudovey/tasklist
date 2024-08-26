@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.util.List;
 @Table(name = "tasks")
 public class Task implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
@@ -29,6 +30,7 @@ public class Task implements Serializable {
     private Status status;
     private LocalDateTime expirationDate;
 
+    @ToString.Exclude
     @Column(name="image")
     @CollectionTable(name="tasks_images")
     @ElementCollection
