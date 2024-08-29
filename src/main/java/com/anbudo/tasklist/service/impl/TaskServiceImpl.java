@@ -22,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
-    private final UserService userService;
     private final ImageService imageService;
 
     @Override
@@ -55,12 +54,9 @@ public class TaskServiceImpl implements TaskService {
             condition ="#task.id!=null",
             key = "#task.id")
     public Task create(Task task, Long userId) {
-        User user = userService.getById(userId);
         task.setStatus(Status.TODO);
         taskRepository.save(task);
-        System.out.println(user.getTasks());
-        user.getTasks().add(task);
-        userService.update(user);
+        taskRepository.assignTask(userId, task.getId());
         return task;
     }
 
