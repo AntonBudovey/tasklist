@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,6 +38,13 @@ public class TaskServiceImpl implements TaskService {
     @Transactional(readOnly = true)
     public List<Task> getAllByUserId(Long userId) {
         return taskRepository.findAllByUserId(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> getAllSoonTasks(Duration duration) {
+        LocalDateTime now = LocalDateTime.now();
+        return taskRepository.findAllSoonTasks(Timestamp.valueOf(now),
+                Timestamp.valueOf(now.plus(duration)));
     }
 
     @Override
@@ -77,4 +87,5 @@ public class TaskServiceImpl implements TaskService {
         update(task);
 
     }
+
 }

@@ -1,9 +1,11 @@
 package com.anbudo.tasklist.service.impl;
 
+import com.anbudo.tasklist.domain.MailType;
 import com.anbudo.tasklist.domain.exception.ResourceNotFoundException;
 import com.anbudo.tasklist.domain.user.Role;
 import com.anbudo.tasklist.domain.user.User;
 import com.anbudo.tasklist.repository.UserRepository;
+import com.anbudo.tasklist.service.MailService;
 import com.anbudo.tasklist.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Properties;
 import java.util.Set;
 
 @Service
@@ -21,6 +24,7 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final MailService mailService;
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "userService::getById", key = "#id")
@@ -49,8 +53,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @Caching(cacheable = {
-            @Cacheable(cacheNames = "userService::getById", key = "#user.id"),
-            @Cacheable(cacheNames = "userService::getByUsername", key = "#user.username")
+            @Cacheable(
+                    value = "UserService::getById",
+                    condition = "#user.id!=null",
+                    key = "#user.id"
+            ),
+            @Cacheable(
+                    value = "UserService::getByUsername",
+                    condition = "#user.username!=null",
+                    key = "#user.username"
+            )
     })
     public User create(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
@@ -63,6 +75,7 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = Set.of(Role.ROLE_USER);
         user.setRoles(roles);
         userRepository.save(user);
+        mailService.sendEmail(user, MailType.REGISTRATION, new Properties());
         return user;
     }
 
@@ -78,5 +91,16 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = "userService::getById", key = "#id")
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(
+            value = "UserService::getTaskAuthor",
+            key = "#taskId"
+    )
+    public User getTaskAuthor(Long taskId) {
+        return userRepository.findTaskAuthor(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }
