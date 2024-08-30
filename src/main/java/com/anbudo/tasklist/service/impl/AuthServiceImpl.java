@@ -5,6 +5,7 @@ import com.anbudo.tasklist.domain.user.User;
 import com.anbudo.tasklist.repository.TaskRepository;
 import com.anbudo.tasklist.repository.UserRepository;
 import com.anbudo.tasklist.service.AuthService;
+import com.anbudo.tasklist.service.MailService;
 import com.anbudo.tasklist.service.UserService;
 import com.anbudo.tasklist.web.dto.auth.JwtRequest;
 import com.anbudo.tasklist.web.dto.auth.JwtResponse;

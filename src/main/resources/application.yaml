@@ -12,11 +12,13 @@ spring:
 
   application:
     name: tasklist
+
   datasource:
     url: jdbc:postgresql://${HOST}:5432/${POSTGRES_DATABASE}?currentSchema=${POSTGRES_SCHEMA}
     username: ${POSTGRES_USERNAME}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   liquibase:
     change-log: classpath:/liquibase/db.changelog.yaml
     enabled: true
@@ -24,6 +26,21 @@ spring:
   graphql:
     graphiql:
       enabled: true
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        debug: false
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 security:
   jwt:

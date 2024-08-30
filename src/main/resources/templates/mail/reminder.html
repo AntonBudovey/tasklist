@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>One task is expired soon</title>
+    <style>
+        #body {
+            display: flex;
+            flex-direction: column;
+            font-family: "Segoe UI", serif;
+            align-items: center;
+            background-color: #607FF2;
+            font-size: 20px;
+            height: 100%;
+        }
+
+        #div {
+            display: block;
+            flex-direction: column;
+            margin: 10%;
+            font-family: "Segoe UI", serif;
+            background-color: white;
+            padding: 3%;
+            border-radius: 20px;
+            color: black;
+        }
+
+        #a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body id="body">
+<div id="div">
+    <h1 style="text-align: center">Reminder</h1>
+    <p th:text="'Hello, ' + ${name}">Hello!</p>
+    <div>
+        <hr>
+        <p th:text="'Title: ' + ${title}">Title: title</p>
+        <p th:if="${description != null}." th:text="'Description: ' + ${description}">Description: description</p>
+        <hr>
+    </div>
+    <p>You can get more information about this task in the app.</p>
+    <p>With best regards, <br> Anton Budovey</p>
+    <a id="a" href="https://github.com/AntonBudovey/tasklist">Github</a>
+
+</div>
+
+</body>
+</html>

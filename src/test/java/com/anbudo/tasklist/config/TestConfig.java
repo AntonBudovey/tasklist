@@ -4,12 +4,13 @@ import com.anbudo.tasklist.repository.TaskRepository;
 import com.anbudo.tasklist.repository.UserRepository;
 import com.anbudo.tasklist.service.ImageService;
 import com.anbudo.tasklist.service.impl.AuthServiceImpl;
-import com.anbudo.tasklist.service.impl.ImageServiceImpl;
+import com.anbudo.tasklist.service.impl.MailServiceImpl;
 import com.anbudo.tasklist.service.impl.TaskServiceImpl;
 import com.anbudo.tasklist.service.impl.UserServiceImpl;
 import com.anbudo.tasklist.service.props.JwtProperties;
 import com.anbudo.tasklist.service.props.MinioProperties;
 import com.anbudo.tasklist.web.security.JwtTokenProvider;
+import com.anbudo.tasklist.service.impl.ImageServiceImpl;
 import com.anbudo.tasklist.web.security.JwtUserDetailsService;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.thymeleaf.TemplateEngine;
 
 @TestConfiguration
 @RequiredArgsConstructor
@@ -28,7 +30,7 @@ public class TestConfig {
 
     @Bean
     @Primary
-    public PasswordEncoder testPasswordEncoder() {
+    public BCryptPasswordEncoder testPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -45,7 +47,7 @@ public class TestConfig {
     public UserDetailsService userDetailsService(
             final UserRepository userRepository
     ) {
-        return new JwtUserDetailsService(testUserService(userRepository));
+        return new JwtUserDetailsService(userService(userRepository));
     }
 
     @Bean
@@ -60,11 +62,21 @@ public class TestConfig {
         return properties;
     }
 
-//    @Bean
-//    public Configuration configuration() {
-//        return Mockito.mock(Configuration.class);
-//    }
+    @Bean
+    public TemplateEngine templateEngine() {
+        return Mockito.mock(TemplateEngine.class);
+    }
 
+    @Bean
+    public JavaMailSender mailSender() {
+        return Mockito.mock(JavaMailSender.class);
+    }
+
+    @Bean
+    @Primary
+    public MailServiceImpl mailService() {
+        return new MailServiceImpl(mailSender(),templateEngine());
+    }
 
     @Bean
     @Primary
@@ -78,17 +90,18 @@ public class TestConfig {
     ) {
         return new JwtTokenProvider(jwtProperties(),
                 userDetailsService(userRepository),
-                testUserService(userRepository));
+                userService(userRepository));
     }
 
     @Bean
     @Primary
-    public UserServiceImpl testUserService(
+    public UserServiceImpl userService(
             final UserRepository userRepository
     ) {
         return new UserServiceImpl(
                 userRepository,
-                testPasswordEncoder()
+                testPasswordEncoder(),
+                mailService()
         );
     }
 
@@ -107,7 +120,7 @@ public class TestConfig {
             final AuthenticationManager authenticationManager
     ) {
         return new AuthServiceImpl(
-                testUserService(userRepository),
+                userService(userRepository),
                 authenticationManager,
                 tokenProvider(userRepository)
         );
